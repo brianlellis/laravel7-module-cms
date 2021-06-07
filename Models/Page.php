@@ -10,8 +10,8 @@ class CmsPage extends Model
 {
   use \Swis\Laravel\Fulltext\Indexable;
 
+  protected $connection = 'mysql';
   protected $indexContentColumns = [];
-
   protected $indexTitleColumns = [
     'title',
     'content_body',

@@ -10,6 +10,7 @@ class CmsBlogPost extends Model
 {
   use \Swis\Laravel\Fulltext\Indexable;
 
+  protected $connection = 'mysql';
   protected $indexContentColumns = [];
 
   protected $indexTitleColumns = [
