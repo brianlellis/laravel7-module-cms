@@ -27,7 +27,7 @@
       </td>
       <td>
         @can('cms-page-update')
-          <a class="btn btn-sm font-weight-bold btn-primary" href="/admin/cms/page/create?content_id={{ $page->id }}">Edit</a>
+          <a class="btn btn-sm font-weight-bold btn-primary" href="@url('/admin/cms/page/create?content_id='){{ $page->id }}">Edit</a>
         @endcan
 
         @can('cms-page-delete')

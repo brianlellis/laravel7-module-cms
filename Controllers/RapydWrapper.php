@@ -11,13 +11,13 @@ class RapydWrapper extends Controller
   public function store()
   {
     CmsContentWrapper::create($this->make_wrapper());
-    return redirect('/admin/cms/wrapper/dashboard');
+    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/wrapper/dashboard');
   }
 
   public function update(CmsContentWrapper $wrapper)
   {
     $wrapper->update($this->make_wrapper());
-    return redirect('/admin/cms/wrapper/dashboard');
+    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/wrapper/dashboard');
   }
 
   public function delete(CmsContentWrapper $wrapper)

@@ -26,7 +26,7 @@
         <td>{{ $category->description }}</td>
         <td>{{ $category->slug }}</td>
         <td>
-          <a class="btn btn-primary btn-sm font-weight-bold" href="/admin/cms/category/create?category_id={{$category->id}}">Edit</a>
+          <a class="btn btn-primary btn-sm font-weight-bold" href="@url('/admin/cms/category/create?category_id='){{$category->id}}">Edit</a>
           <form action="/api/cms/category/{{$category->id}}/delete" method="POST"
             style="display: inline;"
             onSubmit="return confirm('Are you sure you want to delete this category?')">

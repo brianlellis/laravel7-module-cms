@@ -25,7 +25,7 @@
       <td>{{ $wrapper->description }}</td>
       <td>{{ $wrapper->blade_path }}</td>
       <td>
-        <a class="btn btn-primary btn-sm font-weight-bold" href="/admin/cms/wrapper/create?wrapper_id={{ $wrapper->id }}">Edit</a>
+        <a class="btn btn-primary btn-sm font-weight-bold" href="@url('/admin/cms/wrapper/create?wrapper_id='){{ $wrapper->id }}">Edit</a>
         <form action="/api/cms/wrapper/{{ $wrapper->id }}/delete" method="POST" style="display: inline;"
           onSubmit="return confirm('Are you sure you want to delete this wrapper?')">
           @csrf

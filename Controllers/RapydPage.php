@@ -43,7 +43,7 @@ class RapydPage extends Controller
       \FullText::reindex_record('\\Rapyd\\Model\\CmsPage', $request->content_id);
       return back()->with('success', $success_message);
     }
-    return redirect('/admin/cms/page/dashboard')->with('success', $success_message);
+    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/page/dashboard')->with('success', $success_message);
   }
 
   public function delete($content_id)

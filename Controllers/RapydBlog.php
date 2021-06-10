@@ -24,7 +24,7 @@ class RapydBlog extends Controller
   {
     $blog = CmsBlogPost::create($this->make_blog());
     $blog->categories()->attach(request()->category);
-    return redirect('/admin/cms/blog/dashboard')->with('success', 'Post Created');
+    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/blog/dashboard')->with('success', 'Post Created');
   }
 
   public function update(CmsBlogPost $blog)

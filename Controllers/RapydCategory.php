@@ -9,13 +9,13 @@ class RapydCategory extends Controller {
   public function store()
   {
     CmsCategory::create($this->make_category());
-    return redirect('/admin/cms/category/dashboard');
+    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/category/dashboard');
   }
 
   public function update(CmsCategory $category)
   {
     $category->update($this->make_category());
-    return redirect('/admin/cms/category/dashboard');
+    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/category/dashboard');
   }
 
   public function delete(CmsCategory $category)

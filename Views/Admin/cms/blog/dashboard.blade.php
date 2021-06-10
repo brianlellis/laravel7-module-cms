@@ -18,7 +18,7 @@
       <td>{{ $post->title }}</td>
       <td>
         @can('user-update')
-          <a href="/admin/user/profile?user_id={{ $post->user_id }}">{{$post->author->name_first}} {{$post->author->name_last}}</a>
+          <a href="@url('/admin/user/profile?user_id='){{ $post->user_id }}">{{$post->author->name_first}} {{$post->author->name_last}}</a>
         @else
           {{$post->author->name_first}} {{$post->author->name_last}}
         @endcan
@@ -36,10 +36,10 @@
         @endforeach
       </td>
       <td>
-        <a class="btn btn-sm btn-primary font-weight-bold" target="_blank" href="/{{$post->url_slug}}">Preview</a>
+        <a class="btn btn-sm btn-primary font-weight-bold" target="_blank" href="@url('/'){{$post->url_slug}}">Preview</a>
 
         @can('cms-blog-update')
-          <a class="btn btn-sm btn-primary font-weight-bold" href="/admin/cms/blog/create?blog_id={{$post->id}}">Edit</a>
+          <a class="btn btn-sm btn-primary font-weight-bold" href="@url('/admin/cms/blog/create?blog_id='){{$post->id}}">Edit</a>
         @endcan
 
         @can('cms-blog-delete')

@@ -178,7 +178,7 @@
     </div>
 
     <div class="form-group">
-      <a href="/admin/dashboard" class="btn btn-danger" type="submit">Cancel</a>
+      <a href="@url('admin/dashboard')" class="btn btn-danger" type="submit">Cancel</a>
       <button class="btn btn-success" type="submit">Submit</button>
     </div>
   </form>
