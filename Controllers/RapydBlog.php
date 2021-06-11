@@ -72,6 +72,7 @@ class RapydBlog extends Controller
     if (isset($data['image_featured'])) {
       $image = request()->file('image_featured');
       $image->move(public_path('blog/images'), $image->getClientOriginalName());
+      // GREP FIX FOR AMAZON SOLUTION
       $data['image_featured'] = '/blog/images/' . $image->getClientOriginalName();
     }
     return $data;
