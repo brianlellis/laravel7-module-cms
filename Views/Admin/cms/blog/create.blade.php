@@ -23,27 +23,27 @@
   (isset($post->user_id) && $user->id === $post->user_id) ||
   !request('blog_id')
 )
-  <form method='post' action={{ $post ? "/api/cms/blog/$post->id/update" : '/api/cms/blog/store'}} enctype="multipart/form-data">
-    @csrf
-    <div class="row">
-      {{-- POST BODY --}}
-      <div class="col-md-9 col-sm-12">
-      <div class="card">
-        <div class="card-header">
-        <h2 class="card-title">
-          @if ($post)
-            Edit Post
-          @else
-            Add Post
-          @endif
-        </h2>
-        </div>
-        <div id="post_body" class="card-body">
-          {{-- POST TITLE --}}
-          <div class="form-group">
-            <label for="title">Blog Post Title</label>
-            <input type="text" class="form-control" id="title" name='title' value="{{$post->title ?? old('title')}}" required>
-          </div>
+  <form id="laraberg-form" method='post' action={{ $post ? "/api/cms/blog/$post->id/update" : '/api/cms/blog/store'}} enctype="multipart/form-data">
+      @csrf
+      <div class="row">
+          {{-- POST BODY --}}
+          <div class="col-md-9 col-sm-12">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">
+                  @if ($post)
+                      Edit Post
+                  @else
+                      Add Post
+                  @endif
+                </h2>
+              </div>
+              <div id="post_body" class="card-body">
+                  {{-- POST TITLE --}}
+                  <div class="form-group">
+                      <label for="title">Blog Post Title</label>
+                      <input type="text" class="form-control" id="title" name='title' value="{{$post->title ?? old('title')}}" required>
+                  </div>
 
           <div class="row">
             <div class="col-md-6">
@@ -66,10 +66,15 @@
             @endif
           </div>
 
-          {{-- POST BODY --}}
-          <div class="form-group">
-            <textarea class="form-control richTextBox" name="content_body">{{$post->content_body ?? old('content_body')}}</textarea>
-          </div>
+
+                  {{-- POST BODY --}}
+                  <div class="form-group">
+                      @if ($post->content_body ?? false)
+                        <textarea id="cms_content_editor" name="content_body" hidden>{{ $post->content_body }}</textarea>
+                      @else
+                        <textarea id="cms_content_editor" name="content_body" hidden></textarea>
+                      @endif
+                  </div>
 
         {{-- IF YOU DONT HAVE PERMISSION TO CREATE POST YOU CANT SET THE CMS SETTINGS --}}
         @if($user->can('cms-blog-create'))
@@ -88,19 +93,19 @@
                 <textarea class="form-control tab-able" name="page_script" rows="10" placeholder="Post specific JS...">{{$post->page_script ?? old('page_script')}}</textarea>
               </div>
             </div>
-          </div>
-          <div class="row">
             <div class="col-12">
-              <label for="page_css">Social Media Title</label>
-              <input name="social_page_title">
-            </div>
-            <div class="col-12">
-              <label for="page_css">Social Media Image Url</label>
-              <input name="social_page_img">
-            </div>
-            <div class="col-12">
-              <label for="page_css">Social Media Description</label>
-              <input name="social_page_desc">
+              <div class="form-group">
+                <label for="page_css">Social Media Title</label>
+                <input class="form-control" name="social_page_title">
+              </div>
+              <div class="form-group">
+                <label for="page_css">Social Media Image Url</label>
+                <input class="form-control" name="social_page_img">
+              </div>
+              <div class="form-group">
+                <label for="page_css">Social Media Description</label>
+                <input class="form-control" name="social_page_desc">
+              </div>
             </div>
           </div>
         @endif
@@ -242,73 +247,79 @@
       </div>
     </div>
 
-    @section('page_bottom_scripts')
-      <script>
-        const cssTextarea = document.querySelector('#page_css')
+    {{-- INIT SCRIPT --}}
+    {{-- DEPENDENCIES --}}
+    <script src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    {{-- NOTE: DO NOT TOUCH!!! REQUIRED FOR JSX USAGE --}}
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    {{-- LIBRARY --}}
+    <link rel="stylesheet" href="{{ asset('admin_pub/vendor/laraberg/css/laraberg.css') }}">
+    <script src="{{ asset('admin_pub/vendor/laraberg/js/laraberg.js') }}"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        Laraberg.init(
+          'cms_content_editor', {
+            height: '850px',
+            laravelFilemanager: true,
+            sidebar: false
+          });
+      });
 
-        function tinymce_init_callback() {
-          const iframe = document.querySelector('iframe')
-          const doc = iframe.contentWindow.document;
-          const head = doc.querySelector('head')
+      document.getElementById('laraberg-form').addEventListener('submit', () => {
+        // PREVENT SHOWING UNSAVED CHANGES POPUP
 
-          let style;
-          style = document.createElement('style')
-          style.innerHTML = cssTextarea.value;
-          head.appendChild(style)
+        // get current edits log
+        const postType = wp.data.select( 'core/editor' ).getCurrentPostType();
+        const postId = wp.data.select( 'core/editor' ).getCurrentPostId();
+        const currentEditsLog = wp.data.select( 'core' ).getEntityRecordNonTransientEdits('postType', postType, postId);
 
-
-          cssTextarea.addEventListener('keyup', (e) => {
-            head.removeChild(style)
-            style.innerHTML = cssTextarea.value
-            head.appendChild(style)
-          })
+        // clean up all the edits by deleting all properties from the object
+        for (let member in currentEditsLog) {
+          if (currentEditsLog.hasOwnProperty(member)) {
+            delete currentEditsLog[member];
+          }
         }
+      });
 
-        document.querySelectorAll('.tab-able').forEach(field => {
-          field.addEventListener('keydown', e => {
-            if ( e.key === 'Tab' && !e.shiftKey ) {
-              document.execCommand('insertText', false, "\t");
-              e.preventDefault();
-              return false;
+      const wrapperSelector = document.getElementById('content_wrapper_path')
+      fetchWrapper(wrapperSelector.value)
+
+      wrapperSelector.addEventListener('change', (e) => {
+        fetchWrapper(e.target.value)
+      })
+
+      function fetchWrapper(value) {
+        if(!value) return;
+
+        fetch(`/api/cms/wrapper/${value}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              updateStyles(data.styles)
             }
           })
-        });
-      </script>
+      }
 
-      <script src="https://cdn.tiny.cloud/1/sciq4hgol5faritl7pux7z8gazeni4fj5bkebpkgbkueunhk/tinymce/5/tinymce.min.js"></script>
-      <script>
-        tinymce.remove('textarea.richTextBox');
-        tinymce.init({
-          selector: 'textarea.richTextBox'
-          , plugins: 'print preview paste importcss searchreplace autolink directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons'
-          , menubar: false
-          , toolbar: 'undo redo | bold italic underline strikethrough | fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent | table | numlist bullist | forecolor backcolor removeformat | charmap emoticons | link anchor | ltr rtl'
-          , toolbar_sticky: true
-          , image_advtab: true
-          , content_css: '//www.tiny.cloud/css/codepen.min.css'
-          , importcss_append: true
-          , height: 400
-          , file_browser_callback: function(field_name, url, type, win) {
-            $('#upload_file').trigger('click');
-          }
-          , height: 600
-          , image_caption: true
-          , quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable'
-          , noneditable_noneditable_class: "mceNonEditable"
-          , toolbar_mode: 'sliding'
-          , init_instance_callback: function(editor) {
-            if (typeof tinymce_init_callback !== "undefined") {
-              tinymce_init_callback(editor);
-            }
-          }
-          , setup: function(editor) {
-            if (typeof tinymce_setup_callback !== "undefined") {
-              tinymce_setup_callback(editor);
-            }
-          }
-        });
 
-      </script>
-    @endsection
+      function updateStyles(styles) {
+        let reg = new RegExp(/([^\r\n,{}]+)(,(?=[^}]*{)|\s*{)/g)
+        let selectors = [...styles.matchAll(reg)];
+        selectors.forEach(selector => {
+          if (selector[0].indexOf('.block-editor__typewriter') === -1) {
+            styles = styles.replace(selector[0], '.block-editor__typewriter' + selector[0])
+          }
+        })
+        let style = document.querySelector('style')
+        style.innerText = style.innerText + styles
+      }
+
+    </script>
+
+    {{-- CUSTOM CATEGORIES --}}
+    {!! \RapydPage::laraberg_custom_cats() !!}
+
+    {{-- CUSTOM BLOCKS --}}
+    {!! \RapydPage::laraberg_custom_blocks() !!}
   </form>
 @endif
