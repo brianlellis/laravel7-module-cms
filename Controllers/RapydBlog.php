@@ -48,21 +48,24 @@ class RapydBlog extends Controller
   public function make_blog()
   {
     $data = request()->validate([
-      'user_id'           => 'required',
-      'title'             => 'required',
-      'content_body'      => 'required',
-      'posted_at'         => 'required',
-      'is_featured'       => 'required',
-      'is_press_release'  => 'required',
-      'is_published'      => 'required',
-      'subtitle'          => 'nullable',
-      'short_desc'        => 'nullable',
-      'meta_desc'         => 'nullable',
-      'page_script'       => 'nullable',
-      'page_css'          => 'nullable',
-      'image_featured'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-      'url_slug'          => 'nullable', //if null auto generate,
-      'content_wrapper_path' => 'nullable'
+      'user_id'               => 'required',
+      'title'                 => 'required',
+      'content_body'          => 'required',
+      'posted_at'             => 'required',
+      'is_featured'           => 'required',
+      'is_press_release'      => 'required',
+      'is_published'          => 'required',
+      'subtitle'              => 'nullable',
+      'short_desc'            => 'nullable',
+      'meta_desc'             => 'nullable',
+      'page_script'           => 'nullable',
+      'page_css'              => 'nullable',
+      'image_featured'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+      'url_slug'              => 'nullable', //if null auto generate,
+      'content_wrapper_path'  => 'nullable',
+      'social_page_title'      => 'nullable',
+      'social_page_img'       => 'nullable',
+      'social_page_desc'      => 'nullable'
     ]);
 
     if (!isset($data['url_slug'])) {

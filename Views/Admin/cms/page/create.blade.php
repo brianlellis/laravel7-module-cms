@@ -142,6 +142,29 @@
       @endif
     </div>
 
+    <div class="card card-collapsed">
+      <div class="card-header">
+        <h3 class="card-title">Social Media Meta Tags</h3>
+        <div class="card-options">
+          <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-down"></i></a>
+        </div>
+      </div>
+      <div class="card-body row">
+        <div class="col-12">
+          <label for="page_css">Title</label>
+          <input class="form-control" name="social_page_title">
+        </div>
+        <div class="col-12">
+          <label for="page_css">Image Url</label>
+          <input class="form-control" name="social_page_img">
+        </div>
+        <div class="col-12">
+          <label for="page_css">Description</label>
+          <input class="form-control" name="social_page_desc">
+        </div>
+      </div>
+    </div>
+
     {{-- CSS & JS --}}
     <div class="card card-collapsed">
       <div class="card-header">

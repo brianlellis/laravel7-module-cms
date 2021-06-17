@@ -26,12 +26,15 @@ class RapydPage extends Controller
     $new_page->title        = $validator['content_title'];
     $new_page->meta_desc    = $request->content_meta_description ?? '';
     $new_page->url_slug     = $request->url_slug ?? \RapydCore::slugify($validator['content_title']);
-    $new_page->is_published = $request->is_published ?? 0;
-    $new_page->content_body = $request->cms_content_editor ?? '';
-    $new_page->page_script  = $request->content_script ?? '';
-    $new_page->page_css     = $request->content_css ?? '';
+    $new_page->is_published             = $request->is_published ?? 0;
+    $new_page->content_body             = $request->cms_content_editor ?? '';
+    $new_page->page_script              = $request->content_script ?? '';
+    $new_page->page_css                 = $request->content_css ?? '';
     $new_page->content_wrapper_path     = $request->content_wrapper_path ?? '';
     $new_page->header_response_override = $request->header_response_override ?? '';
+    $new_page->social_page_title        = $request->social_page_title ?? '';
+    $new_page->social_page_img          = $request->social_page_img ?? '';
+    $new_page->social_page_desc         = $request->social_page_desc ?? '';
     $new_page->save();
 
     $new_page->categories()->detach();
