@@ -24,6 +24,8 @@ class RapydBlog extends Controller
   {
     $blog = CmsBlogPost::create($this->make_blog());
     $blog->categories()->attach(request()->category);
+
+    \RapydEvents::send_mail('cmsblog_created', ['passed_cms_post'=>$blog]);
     return redirect(request()->getSchemeAndHttpHost().'/admin/cms/blog/dashboard')->with('success', 'Post Created');
   }
 
@@ -34,12 +36,14 @@ class RapydBlog extends Controller
     if (request()->category && request()->category[0] !== null) {
       $blog->categories()->attach(request()->category);
     }
+    \RapydEvents::send_mail('cmsblog_updated', ['passed_cms_post'=>$blog]);
     \FullText::reindex_record('\\Rapyd\\Model\\CmsBlogPost', $blog->id);
     return back()->with('success', 'Post Updated');
   }
 
   public function delete(CmsBlogPost $blog)
   {
+    \RapydEvents::send_mail('cmsblog_removed', ['passed_cms_post'=>$blog]);
     $blog->delete();
     return back()->with('success', 'Post Deleted');
   }
