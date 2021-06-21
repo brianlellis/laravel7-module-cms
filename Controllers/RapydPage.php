@@ -20,6 +20,10 @@ class RapydPage extends Controller
     $new_page  = $request->content_id ? CmsPage::find($request->content_id) : new CmsPage;
     $mail_even = $request->content_id ? 'updated' : 'created';
     $success_message = 'CMS content successfully updated';
+
+    if ($request->content_id) {
+      \Cache::forget(env('APP_DOMAIN')."cmspage_{$new_page->url_slug}");
+    }
     // NOTE: LEAVING HERE AS WARNING!!!!
     // YOU CANNOT CLEAN THE CONTENT AS IT BREAKS THE WYSIWIG DUE TO COMMENTS NEEDED
     //$clean_content = preg_replace('/<!--(.*)-->|\\r\\n/Uis', '', $validator['cms_page_editor']);
@@ -45,6 +49,13 @@ class RapydPage extends Controller
 
     \RapydEvents::send_mail("cmspage_{$mail_even}", ['passed_cms_page'=>$new_page]);
 
+    if ($new_page->url_slug) {
+      \Cache::rememberForever(env('APP_DOMAIN')."cmspage_{$new_page->url_slug}", 
+          function() use($new_page) {
+            return $new_page;
+          });
+    }
+
     if ($request->content_id) {
       \FullText::reindex_record('\\Rapyd\\Model\\CmsPage', $request->content_id);
       return back()->with('success', $success_message);
@@ -55,6 +66,7 @@ class RapydPage extends Controller
   public function delete($content_id)
   {
     $page = CmsPage::find($content_id);
+    \Cache::forget(env('APP_DOMAIN')."cmspage_{$page->url_slug}");
     \RapydEvents::send_mail('cmspage_removed', ['passed_cms_page'=>$page]);
     $page->delete();
     return back()->with('success', 'Page successfully removed');

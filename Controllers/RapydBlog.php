@@ -15,9 +15,16 @@ class RapydBlog extends Controller
     return CmsBlogPost::orderBy($order_by, $direction)->paginate(25);
   }
 
-  public static function get_post($slug)
+  public static function get_post()
   {
-    return CmsBlogPost::where('url_slug', $slug)->first();
+    $url_slug   = request()->path();
+    $url_prefix = \SettingsSite::get('cms_blog_post_prefix');
+    $url_slug   = ltrim(str_replace("$url_prefix", '', $url_slug), '/');
+
+    return \Cache::rememberForever(env('APP_DOMAIN')."cmspost_{$url_slug}", 
+          function() use($url_slug) {
+            return CmsBlogPost::where('url_slug', $url_slug)->first();
+          });
   }
 
   public function store()
@@ -26,15 +33,31 @@ class RapydBlog extends Controller
     $blog->categories()->attach(request()->category);
 
     \RapydEvents::send_mail('cmsblog_created', ['passed_cms_post'=>$blog]);
+
+    if ($blog->url_slug) {
+      \Cache::rememberForever(env('APP_DOMAIN')."cmspost_{$blog->url_slug}", 
+          function() use($blog) {
+            return $blog;
+          });
+    }
     return redirect(request()->getSchemeAndHttpHost().'/admin/cms/blog/dashboard')->with('success', 'Post Created');
   }
 
   public function update(CmsBlogPost $blog)
   {
+    \Cache::forget(env('APP_DOMAIN')."cmspost_{$blog->url_slug}");
+    
     $blog->update($this->make_blog());
     $blog->categories()->detach();
     if (request()->category && request()->category[0] !== null) {
       $blog->categories()->attach(request()->category);
+    }
+
+    if ($blog->url_slug) {
+      \Cache::rememberForever(env('APP_DOMAIN')."cmspost_{$blog->url_slug}", 
+          function() use($blog) {
+            return $blog;
+          });
     }
     \RapydEvents::send_mail('cmsblog_updated', ['passed_cms_post'=>$blog]);
     \FullText::reindex_record('\\Rapyd\\Model\\CmsBlogPost', $blog->id);
@@ -43,6 +66,7 @@ class RapydBlog extends Controller
 
   public function delete(CmsBlogPost $blog)
   {
+    \Cache::forget(env('APP_DOMAIN')."cmspost_{$blog->url_slug}");
     \RapydEvents::send_mail('cmsblog_removed', ['passed_cms_post'=>$blog]);
     $blog->delete();
     return back()->with('success', 'Post Deleted');
