@@ -40,7 +40,7 @@ class RapydBlog extends Controller
             return $blog;
           });
     }
-    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/blog/dashboard')->with('success', 'Post Created');
+    return redirect(config('app.url').'/admin/cms/blog/dashboard')->with('success', 'Post Created');
   }
 
   public function update(CmsBlogPost $blog)

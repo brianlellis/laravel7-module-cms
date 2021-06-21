@@ -10,14 +10,14 @@ class RapydCategory extends Controller {
   {
     $cat = CmsCategory::create($this->make_category());
     \RapydEvents::send_mail('cmscat_created', ['passed_cms_cat'=>$cat]);
-    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/category/dashboard');
+    return redirect(config('app.url').'/admin/cms/category/dashboard');
   }
 
   public function update(CmsCategory $category)
   {
     $category->update($this->make_category());
     \RapydEvents::send_mail('cmscat_updated', ['passed_cms_cat'=>$cat]);
-    return redirect(request()->getSchemeAndHttpHost().'/admin/cms/category/dashboard');
+    return redirect(config('app.url').'/admin/cms/category/dashboard');
   }
 
   public function delete(CmsCategory $category)
