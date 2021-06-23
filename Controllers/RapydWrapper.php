@@ -30,8 +30,9 @@ class RapydWrapper extends Controller
   {
     if (file_exists(resource_path('Public/views/content-wrapper/' . $wrapper . '.blade.php'))) {
       $view = file_get_contents(resource_path('Public/views/content-wrapper/' . $wrapper . '.blade.php'));
-      preg_match('/<style[^>]*>([^<]+)<\/style>/i', $view, $styles);
-      return ['success' => true, 'styles' => $styles[1]];
+      preg_match("#<style>(.*?)</style>#is", $view, $styles);
+      $styles = implode('', $styles);
+      return ['success' => true, 'styles' => $styles];
     }
     return ['success' => false];
   }
