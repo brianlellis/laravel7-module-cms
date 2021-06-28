@@ -48,7 +48,7 @@
       @if($search_data)
         {{-- Results --}}
         <div class="col-12">
-          @dashboard_table('Bond_ID, Description, Obligee, Limit,')
+          @dashboard_table('Bond_ID, Description, Obligee, Limit, hide_sort,')
               @foreach($search_data as $bond)
                 @php
                   $bond = $bond->indexable;
