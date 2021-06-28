@@ -9,6 +9,7 @@
   if($content_id) {
     $content_data = CmsPage::find($content_id);
   }
+
 @endphp
 
 @can('cms-page-create')
@@ -21,6 +22,9 @@
   {{-- LIBRARY --}}
   <link rel="stylesheet" href="{{ asset('admin_pub/vendor/laraberg/css/laraberg.css') }}">
   <script src="{{ asset('admin_pub/vendor/laraberg/js/laraberg.js') }}"></script>
+
+  {{-- Bond Search --}}
+  @include($fallback, ["blade_lookup" => "cms.components.bond-search"])
 
   {{-- HTML TO BIND TO --}}
   <form id="laraberg-form" action="{{ route('cms.page.store') }}" method="POST">
@@ -128,10 +132,10 @@
               >{{ $category->name }}</option>
               @endforeach
             </select>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
 
     <div class="form-group">
@@ -263,7 +267,6 @@
       let style = document.querySelector('style')
       style.innerText = style.innerText + styles
     }
-
   </script>
 
   {{-- CUSTOM CATEGORIES --}}
