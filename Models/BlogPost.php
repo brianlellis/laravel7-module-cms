@@ -8,16 +8,18 @@ use App\User;
 
 class CmsBlogPost extends Model
 {
-  use \Swis\Laravel\Fulltext\Indexable;
+  // NOTE: FullText Removed as CMS is per app and Full Text
+  // has been moved to a shared service
+  // use \Swis\Laravel\Fulltext\Indexable;
 
   protected $connection = 'mysql';
-  protected $indexContentColumns = [];
+  // protected $indexContentColumns = [];
 
-  protected $indexTitleColumns = [
-    'title',
-    'content_body',
-    'categories.name'
-  ];
+  // protected $indexTitleColumns = [
+  //   'title',
+  //   'content_body',
+  //   'categories.name'
+  // ];
 
   protected $table   = 'cms_blog_posts';
   protected $colKey  = 'id';
@@ -28,9 +30,9 @@ class CmsBlogPost extends Model
   ];
 
   public $casts = [
-    'is_featured' => 'boolean',
-    'is_published' => 'boolean',
-    'is_press_release' => 'boolean',
+    'is_featured'       => 'boolean',
+    'is_published'      => 'boolean',
+    'is_press_release'  => 'boolean',
   ];
 
   public function categories()

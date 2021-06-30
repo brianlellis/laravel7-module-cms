@@ -8,15 +8,18 @@ use Rapyd\Model\CmsCategory;
 
 class CmsPage extends Model
 {
-  use \Swis\Laravel\Fulltext\Indexable;
+  // NOTE: FullText Removed as CMS is per app and Full Text
+  // has been moved to a shared service
+  
+  // use \Swis\Laravel\Fulltext\Indexable;
 
   protected $connection = 'mysql';
-  protected $indexContentColumns = [];
-  protected $indexTitleColumns = [
-    'title',
-    'content_body',
-    'categories.name'
-  ];
+  // protected $indexContentColumns = [];
+  // protected $indexTitleColumns = [
+  //   'title',
+  //   'content_body',
+  //   'categories.name'
+  // ];
 
   protected $table   = 'cms_pages';
   protected $colKey  = 'id';
