@@ -32,7 +32,7 @@ class RapydBlog extends Controller
     $blog = CmsBlogPost::create($this->make_blog());
     $blog->categories()->attach(request()->category);
 
-    \RapydEvents::send_mail('cmsblog_created', ['passed_cms_post'=>$blog]);
+    \RapydEvents::send_mail('cmsblog_created', [ 'passed_cms_post' => $blog ]);
 
     if ($blog->url_slug) {
       \Cache::rememberForever(env('APP_DOMAIN')."cmspost_{$blog->url_slug}", 
