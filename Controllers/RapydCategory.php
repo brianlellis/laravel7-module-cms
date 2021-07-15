@@ -8,21 +8,21 @@ use Rapyd\Model\CmsCategory;
 class RapydCategory extends Controller {
   public function store()
   {
-    $cat = CmsCategory::create($this->make_category());
-    \RapydEvents::send_mail('cmscat_created', ['cms_cat' => $cat]);
+    $category = CmsCategory::create($this->make_category());
+    \RapydEvents::send_mail('cmscat_created', ['event_group_model_id' => $category->id]);
     return redirect(config('app.url').'/admin/cms/category/dashboard');
   }
 
   public function update(CmsCategory $category)
   {
     $category->update($this->make_category());
-    \RapydEvents::send_mail('cmscat_updated', ['cms_cat' => $category]);
+    \RapydEvents::send_mail('cmscat_updated', ['event_group_model_id' => $category->id]);
     return redirect(config('app.url').'/admin/cms/category/dashboard');
   }
 
   public function delete(CmsCategory $category)
   {
-    \RapydEvents::send_mail('cmscat_removed', ['cms_cat' => $category]);
+    \RapydEvents::send_mail('cmscat_removed', ['event_group_model_id' => $category->id]);
     $category->delete();
     return back();
   }

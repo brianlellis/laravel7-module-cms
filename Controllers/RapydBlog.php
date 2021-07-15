@@ -32,7 +32,7 @@ class RapydBlog extends Controller
     $blog = CmsBlogPost::create($this->make_blog());
     $blog->categories()->attach(request()->category);
 
-    \RapydEvents::send_mail('cmsblog_created', [ 'passed_cms_post' => $blog ]);
+    \RapydEvents::send_mail('cmsblog_created', [ 'event_group_model_id' => $blog->id ]);
 
     if ($blog->url_slug) {
       \Cache::rememberForever(env('APP_DOMAIN')."cmspost_{$blog->url_slug}", 
@@ -59,7 +59,7 @@ class RapydBlog extends Controller
             return $blog;
           });
     }
-    \RapydEvents::send_mail('cmsblog_updated', ['passed_cms_post'=>$blog]);
+    \RapydEvents::send_mail('cmsblog_updated', ['event_group_model_id' => $blog->id]);
     \FullText::reindex_record('\\Rapyd\\Model\\CmsBlogPost', $blog->id);
     return back()->with('success', 'Post Updated');
   }
@@ -67,7 +67,7 @@ class RapydBlog extends Controller
   public function delete(CmsBlogPost $blog)
   {
     \Cache::forget(env('APP_DOMAIN')."cmspost_{$blog->url_slug}");
-    \RapydEvents::send_mail('cmsblog_removed', ['passed_cms_post'=>$blog]);
+    \RapydEvents::send_mail('cmsblog_removed', ['event_group_model_id' => $blog->id]);
     $blog->delete();
     return back()->with('success', 'Post Deleted');
   }

@@ -47,7 +47,7 @@ class RapydPage extends Controller
       $new_page->categories()->attach($request->category);
     }
 
-    \RapydEvents::send_mail("cmspage_{$mail_even}", ['cms_page'=>$new_page]);
+    \RapydEvents::send_mail("cmspage_{$mail_even}", ['event_group_model_id' => $new_page->id]);
 
     if ($new_page->url_slug) {
       \Cache::rememberForever(env('APP_DOMAIN')."cmspage_{$new_page->url_slug}", 
@@ -67,7 +67,7 @@ class RapydPage extends Controller
   {
     $page = CmsPage::find($content_id);
     \Cache::forget(env('APP_DOMAIN')."cmspage_{$page->url_slug}");
-    \RapydEvents::send_mail('cmspage_removed', ['cms_page'=>$page]);
+    \RapydEvents::send_mail('cmspage_removed', ['event_group_model_id' => $page->id]);
     $page->delete();
     return back()->with('success', 'Page successfully removed');
   }
