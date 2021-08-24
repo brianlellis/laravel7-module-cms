@@ -226,7 +226,7 @@
                   <option 
                     value="{{$author->id}}"
                     @if( $post->user_id === $author->id ) 
-                      checked 
+                      selected 
                     @endif
                   >
                     {{$author->email}}
