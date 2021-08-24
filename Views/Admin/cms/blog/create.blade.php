@@ -223,15 +223,14 @@
               {{-- All Authors --}}
               @can('cms-blog-select-author')
                 @foreach ($authors as $author)
-                    <option 
-                      value="{{$author->id}}"
-                      @if( $post->user_id === $author->id ) 
-                        checked 
-                      @endif
-                    >
-                      {{$author->email}}
-                    </option>
-                  @endif
+                  <option 
+                    value="{{$author->id}}"
+                    @if( $post->user_id === $author->id ) 
+                      checked 
+                    @endif
+                  >
+                    {{$author->email}}
+                  </option>
                 @endforeach
               @endcan
             </select>
