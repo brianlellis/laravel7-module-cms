@@ -220,14 +220,17 @@
           <div class="form-group">
             <label for="user_id">Author</label>
             <select name="user_id" class="form-control">
-              {{-- Current Auth User --}}
-              <option value="{{auth()->user()->id}}">{{auth()->user()->email}}</option>
               {{-- All Authors --}}
               @can('cms-blog-select-author')
                 @foreach ($authors as $author)
-                  @if($author->id !== auth()->user()->id)
-                  <option value="{{$author->id}}"
-                    @if($post && $post->user_id === $author->id) checked @endif>{{$author->email}}</option>
+                    <option 
+                      value="{{$author->id}}"
+                      @if( $post->user_id === $author->id ) 
+                        checked 
+                      @endif
+                    >
+                      {{$author->email}}
+                    </option>
                   @endif
                 @endforeach
               @endcan
